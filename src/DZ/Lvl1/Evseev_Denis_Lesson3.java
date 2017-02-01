@@ -46,7 +46,7 @@ public class Evseev_Denis_Lesson3 {
             x = sc.nextInt();
             y = sc.nextInt();
         }while (!isCellEmpty(x-1,y-1));
-        checWin(x,y,HUMAN_DOT,WIN_COUNTER);
+     //   checWin(x,y,HUMAN_DOT,WIN_COUNTER);
 
         setX0(x-1,y-1,HUMAN_DOT);
 
@@ -75,61 +75,77 @@ public class Evseev_Denis_Lesson3 {
         }
         return true;
     }
-    private static boolean checWin(int x,int y,char x0,int win_count){
 
+    private static boolean checWin(char x0){
         int count=0;
-        for (int i = 0; i+x <FILD_ZONE||i+y <FILD_ZONE; i++) { //проверяю диагональ вправо вниз
-            if (fild[x+i][y+i]==x0) count++;
-            else break;
+
+        for (int i = 0; i <fild.length ; i++) {
+            for (int j = 0; j <fild.length ; j++) {
+
+                if (j<2){                                           //horizontal
+                    for (int k = 0; k <WIN_COUNTER ; k++) {
+                        if (fild[i][j+k]==x0)count++;
+                    }
+                    if (count==WIN_COUNTER)return true;
+                    else count=0;
+                }
+                if (i<2){                                           //vertical
+                    for (int k = 0; k <WIN_COUNTER ; k++) {
+                        if (fild[i+k][j]==x0)count++;
+                    }
+                    if (count==WIN_COUNTER)return true;
+                    else count=0;
+                }                                                   //diagonal
+                if (i<2&j<2){
+                    for (int k = 0; k <WIN_COUNTER ; k++) {
+                        if (fild[i+k][j+k]==x0) count++;
+                    }
+                    if (count==WIN_COUNTER)return true;
+                    else count=0;
+                }
+                if (i<2&j>2){
+                    for (int k = 0; k <WIN_COUNTER ; k++) {
+                        if (fild[i+k][j-k]==x0) count++;
+                    }
+                    if (count==WIN_COUNTER)return true;
+                    else count=0;
+                }
+            }
         }
-        if (count== win_count) return true;
-        for (int i = 0; x-i>0||y-i>0; i++) {            //проверяю диагональ влево вверх
-            if (fild[x-i][y-i]==x0) count++;
-            else break;
-        }
-        if (count== win_count) return true;
-        count =0;
-        for (int i = 0; i+x <FILD_ZONE||y-i>0; i++) {        //проверяю диагональ вправо вверх
-            if (fild[x+i][y-i]==x0) count++;
-            else break;
-        }
-        if (count==win_count) return true;
-        for (int i = 0; x-i>0||i+y <FILD_ZONE; i++) {           //проверяю диагональ влево вниз
-            if (fild[x-i][y+i]==x0) count++;
-            else break;
-        }
-        if (count==win_count) return true;
-        count=0;
-        for (int i = 0; x-i>0; i++) {                            //проверяю  влево
-            if (fild[x-i][y]==x0) count++;
-            else break;
-        }
-        if (count==win_count) return true;                       //проверяю  вправо
-        for (int i = 0; i+x <FILD_ZONE; i++) {
-            if (fild[x+i][y]==x0) count++;
-            else break;
-        }
-        if (count==win_count) return true;                      //проверяю  вниз
-        count=0;
-        for (int i = 0; y-i>0; i++) {
-            if (fild[x][y-i]==x0) count++;
-            else break;
-        }
-        if (count==win_count) return true;                      //проверяю  вверх
-        for (int i = 0; i+y <FILD_ZONE; i++) {
-            if (fild[x][y+i]==x0) count++;
-            else break;
-        }
-        if (count==win_count) return true;
-        else  return false;
+
+
+        return false;
     }
+
 
 
     public static void main(String[] args) {
         initfild();
         printFild();
-        playerTurn();
-        printFild();
+        while (true){
+            playerTurn();
+            printFild();
+            if (checWin(HUMAN_DOT)) {
+                System.out.println("You win!");
+                break;
+            }
+            if (isFildFull()){
+                System.out.println("DROW!")
+                ;break;
+            }
+            ai_Turn();
+            printFild();
+            if (checWin(AI_DOT)) {
+                System.out.println("You win!");
+                break;
+            }
+            if (isFildFull()){
+                System.out.println("DROW!")
+                ;break;
+            }
+
+        }
+
         sc.close();
     }
 
