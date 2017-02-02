@@ -3,9 +3,7 @@ package DZ.Lvl1;
 import java.util.Random;
 import java.util.Scanner;
 
-/**
- * Created by DENIS on 31.01.2017.
- */
+
 public class Evseev_Denis_Lesson3 {
     private static final int FILD_ZONE =5;
     private static final int WIN_COUNTER =4;
@@ -46,9 +44,8 @@ public class Evseev_Denis_Lesson3 {
             x = sc.nextInt();
             y = sc.nextInt();
         }while (!isCellEmpty(x-1,y-1));
-     //   checWin(x,y,HUMAN_DOT,WIN_COUNTER);
+            setX0(x-1,y-1,HUMAN_DOT);
 
-        setX0(x-1,y-1,HUMAN_DOT);
 
     }
 
@@ -57,14 +54,24 @@ public class Evseev_Denis_Lesson3 {
     }
 
 
+
+
+
+
+
     private static void ai_Turn(){
         int x;
         int y;
         do {
-            x = random.nextInt(FILD_ZONE);
-            y = random.nextInt(FILD_ZONE);
-              }while (!isCellEmpty(x,y));
+            System.out.println("Enter coordinates x, y(1-3)");
+            x = random.nextInt();
+            y = random.nextInt();
+
+        }while (!isCellEmpty(x,y));
         setX0(x,y,AI_DOT);
+
+
+
     }
 
     private static boolean isFildFull (){
@@ -120,10 +127,12 @@ public class Evseev_Denis_Lesson3 {
 
 
     public static void main(String[] args) {
+
         initfild();
         printFild();
         while (true){
             playerTurn();
+
             printFild();
             if (checWin(HUMAN_DOT)) {
                 System.out.println("You win!");
@@ -136,7 +145,7 @@ public class Evseev_Denis_Lesson3 {
             ai_Turn();
             printFild();
             if (checWin(AI_DOT)) {
-                System.out.println("You win!");
+                System.out.println("AI win!");
                 break;
             }
             if (isFildFull()){
