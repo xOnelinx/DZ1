@@ -44,7 +44,12 @@ public class Evseev_Denis_Lesson3 {
             x = sc.nextInt();
             y = sc.nextInt();
         }while (!isCellEmpty(x-1,y-1));
+
             setX0(x-1,y-1,HUMAN_DOT);
+
+
+>>
+
 
 
     }
