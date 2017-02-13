@@ -38,6 +38,12 @@ public class Evseev_Denis_Lesson1 {
         tasc3(a,b,c,d);
         System.out.println(task4(a,b));
         VisocosniGod(d);
+        for (int i = 0; i <5 ; i++) {
+            for (int j = 0; j <3 ; j++) {
+                if (i==2) {a+=i;break;}
+            } if (a>0)break;
+        }
+        System.out.println(a);
 
     }
 }
