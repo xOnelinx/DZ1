@@ -13,6 +13,7 @@ public class Map extends JPanel {
 
     static final int GAME_MOD_H_vs_AI = 0;
     static final int GAME_MOD_H_vs_H = 1;
+    private int gameMode;
 
     private int [][] field;
     private int fieldSizeX;
@@ -23,13 +24,15 @@ public class Map extends JPanel {
     private int cellHeigth;
 
     private final int EMPTY_DOT = 0;
-    private final int AI_DOT = 1;
-    private final int HUMAN_DOT = 2;
+    private final int PLAER2_DOT = 1;
+    private final int PLAER1_DOT = 2;
 
     private static final int GAME_DRAW = 0;
-    private static final int GAME_HUMAN = 1;
+    private static final int GAME_PLAYER1 = 1;
     private static final int GAME_AI = 2;
+
     private int gameStateOver;
+
 
     private boolean gameOver = false;
     private boolean initiolize = false;
@@ -40,7 +43,7 @@ public class Map extends JPanel {
 
     private final Random random = new Random();
 
-    private final Font font = new Font("Times new roman",Font.BOLD,48);
+    private final Font font = new Font("Times new roman",Font.BOLD,40);
 
 
     Map(){
@@ -50,50 +53,57 @@ public class Map extends JPanel {
         public void mouseReleased(MouseEvent e) {
             super.mouseReleased(e);
             update(e);
-            System.out.println(gameOver);
+
         }
     });
 
 
     }
-
+// обработка ходов игроков или аи и игрока
    private void update (MouseEvent e){
-       if (!initiolize)return;                                                               // Ход игрока
-       if (gameOver)return;
-       int cellx = e.getX()/cellWeigth;
-       int celly = e.getY()/cellHeigth;
-       if(!isValidCell(cellx,celly)||!isEmptyCell(cellx,celly))return;
-       field[cellx][celly] = HUMAN_DOT;
-       repaint();
-       ///TODO переделать в метод
-       if (checkWin(HUMAN_DOT)){
-           gameStateOver = GAME_HUMAN;
-           gameOver = true;
-           return;
-       }
-       if (isMapFull()) {
-           gameStateOver = GAME_DRAW;
-           gameOver = true;
-           return;
-       }
-       aiTurn();
-       repaint();
-       if (checkWin(AI_DOT)){
-           gameStateOver = GAME_AI;
-           gameOver=true;
-           return;
-       }
-       if (isMapFull()) {
-           gameStateOver = GAME_DRAW;
-           gameOver = true;
-           return;
-       }
+      if (!initiolize)return;
+      if (gameOver)return;
+      plaerTurn(e,PLAER1_DOT);
+      repaint();
+       ///TODO переделать в метод или наоборот
+      if (isLastTurn(PLAER1_DOT))return;
 
+      if (gameMode==GAME_MOD_H_vs_AI)aiTurn();
+      else {
+            if (gameMode==GAME_MOD_H_vs_H) {
+                plaerTurn(e, PLAER2_DOT);
+            } else {throw new RuntimeException("Incorrect game mod "+gameMode);}
+            }
+      repaint();
+      if (isLastTurn(PLAER2_DOT)) return;
+    }
+    // обработка отжатия мышки добавление координат в игровой массив
+    void plaerTurn(MouseEvent e,int plaerDot){
+        int cellx = e.getX()/cellWeigth;
+        int celly = e.getY()/cellHeigth;
+        if(!isValidCell(cellx,celly)||!isEmptyCell(cellx,celly))return;
+        field[cellx][celly] = plaerDot;
+    }
 
+    //метод не только возвращает значение но и выполняет побочное действие
+    //считал где-то что это плохо..надо разобраться
+    boolean isLastTurn(int dot){
+        if (checkWin(dot)){
+            gameStateOver = GAME_PLAYER1;
+            gameOver = true;
+            return true;
+        }
+        if (isMapFull()) {
+            gameStateOver = GAME_DRAW;
+            gameOver = true;
+            return true;
+        }
+        return false;
     }
 
     void startNewGame (int gameMode,int fildSizeX,int fildSizeY,int winLenth){
-        this.fieldSizeX = fildSizeX;
+       this.gameMode = gameMode;
+       this.fieldSizeX = fildSizeX;
         this.fieldSizeY = fildSizeY;
         this.winLen = winLenth;
         field = new int[fildSizeX][fildSizeY];
@@ -131,10 +141,10 @@ public class Map extends JPanel {
         for (int i = 0; i <fieldSizeX; i++) {                        ///отрисовка ходов игрока или АИ
             for (int j = 0; j <fieldSizeY ; j++) {
             if (isEmptyCell(i,j)) continue;
-                if (field[i][j]==HUMAN_DOT){
+                if (field[i][j]== PLAER1_DOT){
                     g.setColor(Color.RED);
                 }
-                else if (field[i][j]==AI_DOT){
+                else if (field[i][j]== PLAER2_DOT){
                     g.setColor(Color.BLUE);
                 }
                 else {
@@ -153,17 +163,21 @@ public class Map extends JPanel {
 
     void showGameOverMessage(Graphics g){
         g.setColor(Color.DARK_GRAY);
-        g.fillRect(0,200,getWidth(),70);
+        g.fillRect(0,130,getWidth(),120);
         g.setColor(Color.YELLOW);
         g.setFont(font);
+        FontMetrics fm = g.getFontMetrics(font);
 
         switch (gameStateOver){
-            case GAME_DRAW:g.drawString(MSG_DRAW,180,getHeight()/2);
+            case GAME_DRAW:g.drawString(MSG_DRAW,(getWidth()-fm.stringWidth(MSG_DRAW))/2 ,
+                    (getHeight()-fm.getHeight())/2);
                 break;
-            case GAME_HUMAN:g.drawString(MSG_HUM,80,getHeight()/2);
+            case GAME_PLAYER1:g.drawString(MSG_HUM,(getWidth()-fm.stringWidth(MSG_HUM))/2 ,
+                    (getHeight()-fm.getHeight())/2);
              break;
 
-            case GAME_AI:g.drawString(MSG_AI,20,getHeight()/2);
+            case GAME_AI:g.drawString(MSG_AI,(getWidth()-fm.stringWidth(MSG_AI))/2 ,
+                    (getHeight()-fm.getHeight())/2);
                 break;
 
             default:
@@ -182,15 +196,15 @@ public class Map extends JPanel {
             x = random.nextInt(fieldSizeX);
             y = random.nextInt(fieldSizeY);
         } while (!isEmptyCell(x, y));
-        field[x][y] = AI_DOT;
+        field[x][y] = PLAER2_DOT;
     }
     // Проверка, может ли выиграть комп
     private  boolean turnAIWinCell() {
         for (int i = 0; i < fieldSizeY; i++) {
             for (int j = 0; j < fieldSizeX; j++) {
                 if (isEmptyCell(i, j)) {				// поставим нолик в каждую клетку поля по очереди
-                    field[i][j] = AI_DOT;
-                    if (checkWin(AI_DOT)) return true;	// если мы выиграли, вернём истину, оставив нолик в выигрышной позиции
+                    field[i][j] = PLAER2_DOT;
+                    if (checkWin(PLAER2_DOT)) return true;	// если мы выиграли, вернём истину, оставив нолик в выигрышной позиции
                     field[i][j] = EMPTY_DOT;			// если нет - вернём обратно пустоту в клетку и пойдём дальше
                 }
             }
@@ -202,9 +216,9 @@ public class Map extends JPanel {
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
                 if (isEmptyCell(i, j)) {
-                    field[i][j] = HUMAN_DOT;			// поставим крестик в каждую клетку по очереди
-                    if (checkWin(HUMAN_DOT)) {			// если игрок победит
-                        field[i][j] = AI_DOT;			// поставить на то место нолик
+                    field[i][j] = PLAER1_DOT;			// поставим крестик в каждую клетку по очереди
+                    if (checkWin(PLAER1_DOT)) {			// если игрок победит
+                        field[i][j] = PLAER2_DOT;			// поставить на то место нолик
                         return true;
                     }
                     field[i][j] = EMPTY_DOT;			// в противном случае вернуть на место пустоту

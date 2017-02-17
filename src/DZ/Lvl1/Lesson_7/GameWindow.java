@@ -34,7 +34,7 @@ public class GameWindow extends JFrame{
                 startNewGameWindow.setVisible(true);
             }
         });
-        JButton btnExitGame = new JButton("do this");
+        JButton btnExitGame = new JButton("Exit Game");
         btnExitGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
