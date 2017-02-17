@@ -9,10 +9,12 @@ import java.awt.event.ActionListener;
  * Created by Денис on 15.02.2017.
  */
 public class GameWindow extends JFrame{
-    private final int WINDOW_HIGHT = 666;
-    private final int WINDOW_WIGHT = 366;
-    private final int WINDOW_POS_X = 66;
-    private final int WINDOW_POS_Y = 66;
+    private final int WINDOW_HIGHT = 500;
+    private final int WINDOW_WIGHT = 451;
+   private final int WINDOW_POS_X = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-WINDOW_WIGHT;
+   // private final int WINDOW_POS_X = 600;
+   // private final int WINDOW_POS_Y = 300;
+  private final int WINDOW_POS_Y = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2-WINDOW_HIGHT/2;
     StartNewGameWindow startNewGameWindow;
     Map map;
 
@@ -20,7 +22,7 @@ public class GameWindow extends JFrame{
     GameWindow(){
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Denis can!");
-        setSize(WINDOW_HIGHT,WINDOW_WIGHT);
+        setSize(WINDOW_WIGHT,WINDOW_HIGHT);
         setResizable(false);
 
         setLocation(WINDOW_POS_X,WINDOW_POS_Y);
