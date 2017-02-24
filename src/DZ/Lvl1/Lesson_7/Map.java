@@ -71,7 +71,7 @@ public class Map extends JPanel {
 
 
     //метод не только возвращает значение но и выполняет побочное действие
-    //ecnfyfdkbdftn akfu rjywf buhs
+    //устнавливает флаг конца игры и тип конца игры
    private boolean isLastTurn(int dot){
         if (checkWin(dot)){
             if (dot == PLAER1_DOT )
@@ -121,7 +121,7 @@ public class Map extends JPanel {
         cellHeigth = panelHeigth/fieldSizeY;
         cellWeigth = panelWeigth/fieldSizeX;
 
-        int bottom = 25;
+        int bottom = cellHeigth/5;
         g.setColor(Color.RED);
 
         for (int i = 0; i <fieldSizeY; i++) {                      ////отрисовка поля
@@ -138,21 +138,32 @@ public class Map extends JPanel {
             if (isEmptyCell(i,j)) continue;
                 if (field[i][j]== PLAER1_DOT){
                     g.setColor(Color.RED);
+                    drowX(g,cellHeigth,cellWeigth,i,j,bottom);
+
                 }
                 else if (field[i][j]== PLAER2_DOT){
                     g.setColor(Color.BLUE);
+                    g.fillOval(i*cellWeigth+bottom,
+                            j*cellHeigth+bottom,
+                            cellWeigth-bottom*2,
+                            cellHeigth-bottom*2);
                 }
                 else {
                     throw new RuntimeException("Unexpected value in cell X:"+i+"Y:"+j);
                 }
 
-                g.fillOval(i*cellWeigth+bottom,
-                        j*cellHeigth+bottom,
-                        cellWeigth-bottom*2,
-                        cellHeigth-bottom*2);
+
             }
         }
         if (gameOver) showGameOverMessage(g);
+
+   }
+
+   void drowX (Graphics g,int h, int w,int x,int y,int bottom){
+       Graphics2D g2d = (Graphics2D) g;
+       g2d.setStroke(new BasicStroke(h/5));
+       g2d.drawLine(x*w+bottom,y*h+bottom,x*w+w-bottom,y*h+h-bottom);
+       g2d.drawLine(x*w+w-bottom,y*h+bottom,x*w+bottom,y*h+h-bottom);
 
    }
 
