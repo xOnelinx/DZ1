@@ -59,7 +59,7 @@ public class GameWindow extends JFrame{
         setVisible(true);
     }
 
-    void startNewGame (int gameMode,int fildSizeX,int fildSizeY,int winLenth){
+    void startNewGame (GameMod gameMode,int fildSizeX,int fildSizeY,int winLenth){
         map.startNewGame(gameMode,fildSizeX,fildSizeY,winLenth);
     }
 }

@@ -95,9 +95,9 @@ public class StartNewGameWindow extends JFrame{
 
     }
     void btnStartGame_onClick(){
-        int gameMod;
-        if (rbtn_HUM_vs_AI.isSelected())gameMod = Map.GAME_MOD_H_vs_AI;
-        else if (rbtn_HUM_vs_HUM.isSelected())gameMod = Map.GAME_MOD_H_vs_H;
+        GameMod gameMod;
+        if (rbtn_HUM_vs_AI.isSelected())gameMod = GameMod.Human_vs_AI;
+        else if (rbtn_HUM_vs_HUM.isSelected())gameMod = GameMod.Human_vs_Human;
         else throw new RuntimeException("incorrect game mod");
         int fieldSize_X = slFieldSize.getValue();
         int winLen = slWinLen.getValue();

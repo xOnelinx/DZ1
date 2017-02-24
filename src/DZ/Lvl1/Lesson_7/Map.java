@@ -11,9 +11,8 @@ import java.util.Random;
  */
 public class Map extends JPanel {
 
-    static final int GAME_MOD_H_vs_AI = 0;
-    static final int GAME_MOD_H_vs_H = 1;
-    private int gameMode;
+    private GameMod gameMode;
+    private GameEnd gameEnd;
 
     private int [][] field;
     private int fieldSizeX;
@@ -27,19 +26,9 @@ public class Map extends JPanel {
     private final int PLAER2_DOT = 1;
     private final int PLAER1_DOT = 2;
 
-    private static final int GAME_DRAW = 0;
-    private static final int GAME_PLAYER1 = 1;
-    private static final int GAME_AI = 2;
-
-    private int gameStateOver;
-
-
     private boolean gameOver = false;
     private boolean initiolize = false;
-
-    private static final String MSG_DRAW = "ничья";
-    private static final String MSG_HUM = "победил игрок";
-    private static final String MSG_AI = "победил компьютер";
+    private boolean turn =false;
 
     private final Random random = new Random();
 
@@ -63,45 +52,50 @@ public class Map extends JPanel {
    private void update (MouseEvent e){
       if (!initiolize)return;
       if (gameOver)return;
-      plaerTurn(e,PLAER1_DOT);
+      int dot = PLAER1_DOT;
+      if (gameMode==GameMod.Human_vs_Human&turn) {dot =PLAER2_DOT; }
+      int cellx = e.getX()/cellWeigth;
+      int celly = e.getY()/cellHeigth;
+      if(!isValidCell(cellx,celly)||!isEmptyCell(cellx,celly))return;
+      field[cellx][celly] = dot;
       repaint();
-       ///TODO переделать в метод или наоборот
-      if (isLastTurn(PLAER1_DOT))return;
 
-      if (gameMode==GAME_MOD_H_vs_AI)aiTurn();
-      else {
-            if (gameMode==GAME_MOD_H_vs_H) {
-                plaerTurn(e, PLAER2_DOT);
-            } else {throw new RuntimeException("Incorrect game mod "+gameMode);}
-            }
+      if (isLastTurn(dot))return;
+      if (gameMode==GameMod.Human_vs_AI)aiTurn();
+      if (gameMode==GameMod.Human_vs_Human&!turn) {turn=true; return;}
+
       repaint();
       if (isLastTurn(PLAER2_DOT)) return;
-    }
-    // обработка отжатия мышки добавление координат в игровой массив
-    void plaerTurn(MouseEvent e,int plaerDot){
-        int cellx = e.getX()/cellWeigth;
-        int celly = e.getY()/cellHeigth;
-        if(!isValidCell(cellx,celly)||!isEmptyCell(cellx,celly))return;
-        field[cellx][celly] = plaerDot;
-    }
+      turn = false;
+   }
+
 
     //метод не только возвращает значение но и выполняет побочное действие
-    //считал где-то что это плохо..надо разобраться
-    boolean isLastTurn(int dot){
+    //ecnfyfdkbdftn akfu rjywf buhs
+   private boolean isLastTurn(int dot){
         if (checkWin(dot)){
-            gameStateOver = GAME_PLAYER1;
+            if (dot == PLAER1_DOT )
+            {gameEnd = GameEnd.Player1Win;}
+            else{
+                if (gameMode == GameMod.Human_vs_Human){
+                    if (dot == PLAER2_DOT) gameEnd = GameEnd.Player2Win;
+                    else throw new RuntimeException("Unknown Player wins!");
+                }else if (gameMode == GameMod.Human_vs_AI){
+                    if (dot == PLAER2_DOT) gameEnd = GameEnd.AIWin;
+                    else throw new RuntimeException("Unknown Player wins!");}
+                }
             gameOver = true;
             return true;
         }
         if (isMapFull()) {
-            gameStateOver = GAME_DRAW;
+            gameEnd = GameEnd.GameDraw;
             gameOver = true;
             return true;
         }
         return false;
     }
 
-    void startNewGame (int gameMode,int fildSizeX,int fildSizeY,int winLenth){
+   void startNewGame (GameMod gameMode,int fildSizeX,int fildSizeY,int winLenth){
        this.gameMode = gameMode;
        this.fieldSizeX = fildSizeX;
         this.fieldSizeY = fildSizeY;
@@ -112,14 +106,15 @@ public class Map extends JPanel {
         repaint();
 
     }
-    @Override
-    protected void paintComponent (Graphics g){
+
+   @Override
+   protected void paintComponent (Graphics g){
         super.paintComponent(g);
         render(g);
 
     }
 
-    public void render (Graphics g){
+   public void render (Graphics g){
         if (!initiolize)return;
         int panelWeigth = getWidth();
         int panelHeigth = getHeight();
@@ -159,32 +154,38 @@ public class Map extends JPanel {
         }
         if (gameOver) showGameOverMessage(g);
 
-    }
+   }
 
-    void showGameOverMessage(Graphics g){
+   void showGameOverMessage(Graphics g){
         g.setColor(Color.DARK_GRAY);
         g.fillRect(0,130,getWidth(),120);
         g.setColor(Color.YELLOW);
         g.setFont(font);
-        FontMetrics fm = g.getFontMetrics(font);
 
-        switch (gameStateOver){
-            case GAME_DRAW:g.drawString(MSG_DRAW,(getWidth()-fm.stringWidth(MSG_DRAW))/2 ,
-                    (getHeight()-fm.getHeight())/2);
+        switch (gameEnd){
+            case GameDraw:
+                drawMessege(gameEnd.getMesseg(),g);
                 break;
-            case GAME_PLAYER1:g.drawString(MSG_HUM,(getWidth()-fm.stringWidth(MSG_HUM))/2 ,
-                    (getHeight()-fm.getHeight())/2);
-             break;
-
-            case GAME_AI:g.drawString(MSG_AI,(getWidth()-fm.stringWidth(MSG_AI))/2 ,
-                    (getHeight()-fm.getHeight())/2);
+            case Player1Win:
+                drawMessege(gameEnd.getMesseg(),g);
+                break;
+            case Player2Win:
+                drawMessege(gameEnd.getMesseg(),g);
+                break;
+            case AIWin:
+                drawMessege(gameEnd.getMesseg(),g);
                 break;
 
             default:
-                throw new RuntimeException("Unexpected Game Over:"+gameStateOver);
+                throw new RuntimeException("Unexpected Game Over:"+gameEnd);
         }
 
-    }
+   }
+
+   void drawMessege(String msg, Graphics g){
+       FontMetrics fm = g.getFontMetrics(font);
+       g.drawString(msg,(getWidth()-fm.stringWidth(msg))/2 ,
+           (getHeight()-fm.getHeight())/2);}
 
 
     // Ход компьютера
@@ -263,5 +264,5 @@ public class Map extends JPanel {
     private  boolean isValidCell(int x, int y) { return x >= 0 && x < fieldSizeX && y >= 0 && y < fieldSizeY; }
     // а пустая?
     private  boolean isEmptyCell(int x, int y) { return field[x][y] == EMPTY_DOT; }
-    // ну, поиграем))
+
 }
