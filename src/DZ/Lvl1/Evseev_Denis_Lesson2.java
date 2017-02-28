@@ -2,6 +2,7 @@ package DZ.Lvl1;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -96,7 +97,7 @@ public class Evseev_Denis_Lesson2 {
                                                                                                    //но теперь то у меня есть Вы!))   Интересно так ли это и почему?   PS не задал этот вопрос потому что интернет под конец трансляции у меня пропал((
 
 
-
+        ArrayList<String> list = new ArrayList<>();
         System.out.println("Это Калькулятор! Ведите первый аргумент:");                                               //ввод и вывод сделал в мэйне, хотя кажется задание предпологало сделать все 1 куском
         if (sc.hasNextInt())  arg1 = sc.nextInt();
         System.out.println("Введите функцию:");

@@ -14,20 +14,28 @@ public class Map extends JPanel {
     private GameMod gameMode;
     private GameEnd gameEnd;
 
+    //массив игрового поля
     private int [][] field;
+    //переменные размера массивва игр. поля
     private int fieldSizeX;
     private int fieldSizeY;
+    //длинна выигрышной последовательности
     private int winLen;
 
-    private int cellWeigth;
-    private int cellHeigth;
+    //переменные размера клеток
+    private int cellWight;
+    private int cellHeight;
 
+    //элементы массива обозначающие игроков и пустые клетыки
     private final int EMPTY_DOT = 0;
-    private final int PLAER2_DOT = 1;
-    private final int PLAER1_DOT = 2;
+    private final int PLAYER2_DOT = 1;
+    private final int PLAYER1_DOT = 2;
 
+    //флаг конца игры
     private boolean gameOver = false;
+    //флаг инициализации игровых переменных
     private boolean initiolize = false;
+    //флаг хода оппонента
     private boolean turn =false;
 
     private final Random random = new Random();
@@ -50,23 +58,23 @@ public class Map extends JPanel {
     }
 // обработка ходов игроков или аи и игрока
    private void update (MouseEvent e){
-      if (!initiolize)return;
-      if (gameOver)return;
-      int dot = PLAER1_DOT;
-      if (gameMode==GameMod.Human_vs_Human&turn) {dot =PLAER2_DOT; }
-      int cellx = e.getX()/cellWeigth;
-      int celly = e.getY()/cellHeigth;
-      if(!isValidCell(cellx,celly)||!isEmptyCell(cellx,celly))return;
-      field[cellx][celly] = dot;
-      repaint();
+       if (!initiolize)return;
+       if (gameOver)return;
+       int dot = PLAYER1_DOT;
+       if (gameMode==GameMod.Human_vs_Human&turn) {dot = PLAYER2_DOT; }
+       int cellx = e.getX()/ cellWight;
+       int celly = e.getY()/ cellHeight;
+       if(!isValidCell(cellx,celly)||!isEmptyCell(cellx,celly))return;
+       field[cellx][celly] = dot;
+       repaint();
 
-      if (isLastTurn(dot))return;
-      if (gameMode==GameMod.Human_vs_AI)aiTurn();
-      if (gameMode==GameMod.Human_vs_Human&!turn) {turn=true; return;}
+       if (isLastTurn(dot))return;
+       if (gameMode==GameMod.Human_vs_AI)aiTurn();
+       if (gameMode==GameMod.Human_vs_Human&!turn) {turn=true; return;}
 
-      repaint();
-      if (isLastTurn(PLAER2_DOT)) return;
-      turn = false;
+       repaint();
+       if (isLastTurn(PLAYER2_DOT)) return;
+       turn = false;
    }
 
 
@@ -74,14 +82,14 @@ public class Map extends JPanel {
     //устнавливает флаг конца игры и тип конца игры
    private boolean isLastTurn(int dot){
         if (checkWin(dot)){
-            if (dot == PLAER1_DOT )
+            if (dot == PLAYER1_DOT)
             {gameEnd = GameEnd.Player1Win;}
             else{
                 if (gameMode == GameMod.Human_vs_Human){
-                    if (dot == PLAER2_DOT) gameEnd = GameEnd.Player2Win;
+                    if (dot == PLAYER2_DOT) gameEnd = GameEnd.Player2Win;
                     else throw new RuntimeException("Unknown Player wins!");
                 }else if (gameMode == GameMod.Human_vs_AI){
-                    if (dot == PLAER2_DOT) gameEnd = GameEnd.AIWin;
+                    if (dot == PLAYER2_DOT) gameEnd = GameEnd.AIWin;
                     else throw new RuntimeException("Unknown Player wins!");}
                 }
             gameOver = true;
@@ -114,39 +122,42 @@ public class Map extends JPanel {
 
     }
 
+    //трисовка графики
    public void render (Graphics g){
         if (!initiolize)return;
         int panelWeigth = getWidth();
         int panelHeigth = getHeight();
-        cellHeigth = panelHeigth/fieldSizeY;
-        cellWeigth = panelWeigth/fieldSizeX;
+        cellHeight = panelHeigth/fieldSizeY;
+        cellWight = panelWeigth/fieldSizeX;
 
-        int bottom = cellHeigth/5;
+        int bottom = cellHeight /5;
         g.setColor(Color.RED);
 
         for (int i = 0; i <fieldSizeY; i++) {                      ////отрисовка поля
-            int y = i*cellHeigth;
+            int y = i* cellHeight;
             g.drawLine(0,y,panelWeigth,y);
         }
         for (int i = 0; i <fieldSizeX; i++) {
-            int x = i*cellHeigth;
+            int x = i* cellHeight;
             g.drawLine(x,0,x,panelHeigth);
         }
 
         for (int i = 0; i <fieldSizeX; i++) {                        ///отрисовка ходов игрока или АИ
             for (int j = 0; j <fieldSizeY ; j++) {
             if (isEmptyCell(i,j)) continue;
-                if (field[i][j]== PLAER1_DOT){
+                if (field[i][j]== PLAYER1_DOT){
                     g.setColor(Color.RED);
-                    drowX(g,cellHeigth,cellWeigth,i,j,bottom);
+                    drowX(g, cellHeight, cellWight,i,j,bottom);
 
                 }
-                else if (field[i][j]== PLAER2_DOT){
+                else if (field[i][j]== PLAYER2_DOT){
                     g.setColor(Color.BLUE);
-                    g.fillOval(i*cellWeigth+bottom,
-                            j*cellHeigth+bottom,
-                            cellWeigth-bottom*2,
-                            cellHeigth-bottom*2);
+                    Graphics2D g2d = (Graphics2D) g;
+                    g2d.setStroke(new BasicStroke(bottom/1.7f));
+                    g.drawOval(i* cellWight +bottom,
+                            j* cellHeight +bottom/2,
+                            cellWight -bottom*2,
+                            cellHeight -bottom);
                 }
                 else {
                     throw new RuntimeException("Unexpected value in cell X:"+i+"Y:"+j);
@@ -158,7 +169,7 @@ public class Map extends JPanel {
         if (gameOver) showGameOverMessage(g);
 
    }
-
+    //нарисовать крестик
    void drowX (Graphics g,int h, int w,int x,int y,int bottom){
        Graphics2D g2d = (Graphics2D) g;
        g2d.setStroke(new BasicStroke(h/5));
@@ -166,7 +177,7 @@ public class Map extends JPanel {
        g2d.drawLine(x*w+w-bottom,y*h+bottom,x*w+bottom,y*h+h-bottom);
 
    }
-
+    //сообщение о конце игры
    void showGameOverMessage(Graphics g){
         g.setColor(Color.DARK_GRAY);
         g.fillRect(0,130,getWidth(),120);
@@ -192,7 +203,7 @@ public class Map extends JPanel {
         }
 
    }
-
+    //отрисовка сообщения
    void drawMessege(String msg, Graphics g){
        FontMetrics fm = g.getFontMetrics(font);
        g.drawString(msg,(getWidth()-fm.stringWidth(msg))/2 ,
@@ -208,15 +219,15 @@ public class Map extends JPanel {
             x = random.nextInt(fieldSizeX);
             y = random.nextInt(fieldSizeY);
         } while (!isEmptyCell(x, y));
-        field[x][y] = PLAER2_DOT;
+        field[x][y] = PLAYER2_DOT;
     }
     // Проверка, может ли выиграть комп
     private  boolean turnAIWinCell() {
         for (int i = 0; i < fieldSizeY; i++) {
             for (int j = 0; j < fieldSizeX; j++) {
                 if (isEmptyCell(i, j)) {				// поставим нолик в каждую клетку поля по очереди
-                    field[i][j] = PLAER2_DOT;
-                    if (checkWin(PLAER2_DOT)) return true;	// если мы выиграли, вернём истину, оставив нолик в выигрышной позиции
+                    field[i][j] = PLAYER2_DOT;
+                    if (checkWin(PLAYER2_DOT)) return true;	// если мы выиграли, вернём истину, оставив нолик в выигрышной позиции
                     field[i][j] = EMPTY_DOT;			// если нет - вернём обратно пустоту в клетку и пойдём дальше
                 }
             }
@@ -228,9 +239,9 @@ public class Map extends JPanel {
         for (int i = 0; i < fieldSizeX; i++) {
             for (int j = 0; j < fieldSizeY; j++) {
                 if (isEmptyCell(i, j)) {
-                    field[i][j] = PLAER1_DOT;			// поставим крестик в каждую клетку по очереди
-                    if (checkWin(PLAER1_DOT)) {			// если игрок победит
-                        field[i][j] = PLAER2_DOT;			// поставить на то место нолик
+                    field[i][j] = PLAYER1_DOT;			// поставим крестик в каждую клетку по очереди
+                    if (checkWin(PLAYER1_DOT)) {			// если игрок победит
+                        field[i][j] = PLAYER2_DOT;			// поставить на то место нолик
                         return true;
                     }
                     field[i][j] = EMPTY_DOT;			// в противном случае вернуть на место пустоту
