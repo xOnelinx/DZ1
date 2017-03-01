@@ -1,11 +1,9 @@
-package DZ.Lvl_2.Lesson1.sport.Lesson3;
+package DZ.Lvl_2.Lesson3;
 
 
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * dz  lesson3
