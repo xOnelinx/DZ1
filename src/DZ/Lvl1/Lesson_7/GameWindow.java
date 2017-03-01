@@ -11,12 +11,11 @@ import java.awt.event.ActionListener;
 public class GameWindow extends JFrame{
     private final int WINDOW_HIGHT = 500;
     private final int WINDOW_WIGHT = 451;
-   private final int WINDOW_POS_X = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-WINDOW_WIGHT;
-   // private final int WINDOW_POS_X = 600;
-   // private final int WINDOW_POS_Y = 300;
-  private final int WINDOW_POS_Y = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2-WINDOW_HIGHT/2;
-    StartNewGameWindow startNewGameWindow;
-    Map map;
+    private final int WINDOW_POS_X = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-WINDOW_WIGHT;
+
+    private final int WINDOW_POS_Y = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2-WINDOW_HIGHT/2;
+    private StartNewGameWindow startNewGameWindow;
+    private Map map;
 
 
     GameWindow(){
@@ -31,6 +30,7 @@ public class GameWindow extends JFrame{
         btnNewGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                StartNewGW();
                 startNewGameWindow.setVisible(true);
             }
         });
@@ -42,8 +42,6 @@ public class GameWindow extends JFrame{
             }
         });
 
-        startNewGameWindow = new StartNewGameWindow(this);
-
         map = new Map();
 
         JPanel pBottom = new JPanel();
@@ -54,9 +52,12 @@ public class GameWindow extends JFrame{
         add(map,BorderLayout.CENTER);
         add(pBottom,BorderLayout.SOUTH);
 
-
-
         setVisible(true);
+    }
+
+    // вызывает окно в момент нажатия кнопки
+    private void StartNewGW(){
+        startNewGameWindow = new StartNewGameWindow(this);
     }
 
     void startNewGame (GameMod gameMode,int fildSizeX,int fildSizeY,int winLenth){

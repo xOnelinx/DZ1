@@ -12,8 +12,8 @@ import java.awt.event.ActionListener;
  */
 public class StartNewGameWindow extends JFrame{
 
-    private final int WINDOW_HIGHT = 266;
-    private final int WINDOW_WIGHT = 366;
+    private final int WINDOW_WIGHT = 266;
+    private final int WINDOW_HEIGHT = 366;
 
     private int MIN_WIN_LENGTH = 3;
     private int MIN_FIELD_SIZE = 3;
@@ -27,19 +27,17 @@ public class StartNewGameWindow extends JFrame{
     private JSlider slFieldSize;
     private JButton bStartGame;
 
-    GameWindow gameWindow ;
-    Rectangle rectangle;
-
+    private GameWindow gameWindow ;
 
 
     StartNewGameWindow(GameWindow gameWindow){
         this.gameWindow = gameWindow;
         setTitle("Game settings");
-        setSize(WINDOW_HIGHT,WINDOW_WIGHT);
+        setSize(WINDOW_WIGHT, WINDOW_HEIGHT);
         setResizable(false);
-        rectangle = gameWindow.getBounds();
-        int pos_X = (int)rectangle.getCenterX() - WINDOW_WIGHT/2;
-        int pos_Y = (int)rectangle.getCenterY() - WINDOW_HIGHT/2;
+        Rectangle rectangle  = gameWindow.getBounds();
+        int pos_X = (int)rectangle.getCenterX() - WINDOW_WIGHT /2;
+        int pos_Y = (int)rectangle.getCenterY() -  WINDOW_HEIGHT /2;
         setLocation(pos_X,pos_Y);
         setLayout(new GridLayout(10,2));
         gameModeControl();
@@ -53,10 +51,9 @@ public class StartNewGameWindow extends JFrame{
             }
         });
         add(bStartGame);
-
-
-
     }
+
+
 
     void gameModeControl (){
 
