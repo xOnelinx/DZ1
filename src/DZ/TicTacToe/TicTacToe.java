@@ -1,4 +1,4 @@
-package DZ.Lvl1.Lesson_7;
+package DZ.TicTacToe;
 
 /**
  * Created by Денис on 15.02.2017. так и было

@@ -1,8 +1,8 @@
-package DZ.Lvl1.Lesson_7;
+package DZ.TicTacToe;
 
 /**
  * Game mods))
  */
-public enum GameMod {
+enum GameMod {
     Human_vs_AI,Human_vs_Human
 }

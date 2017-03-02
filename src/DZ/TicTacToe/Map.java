@@ -1,19 +1,23 @@
-package DZ.Lvl1.Lesson_7;
+package DZ.TicTacToe;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Random;
 
 /**
- * Created by Денис on 15.02.2017.
+ * Created by Денис on 15.02.2017. Игровое поле
  */
-public class Map extends JPanel {
+class Map extends JPanel {
 
     private GameMod gameMode;
     private GameEnd gameEnd;
 
+    Image image;
     //массив игрового поля
     private int [][] field;
     //переменные размера массивва игр. поля
@@ -103,12 +107,12 @@ public class Map extends JPanel {
         return false;
     }
 
-   void startNewGame (GameMod gameMode,int fildSizeX,int fildSizeY,int winLenth){
+   void startNewGame (GameMod gameMode,int fieldSizeX,int fieldSizeY,int winLength){
        this.gameMode = gameMode;
-       this.fieldSizeX = fildSizeX;
-        this.fieldSizeY = fildSizeY;
-        this.winLen = winLenth;
-        field = new int[fildSizeX][fildSizeY];
+       this.fieldSizeX = fieldSizeX;
+        this.fieldSizeY = fieldSizeY;
+        this.winLen = winLength;
+        field = new int[fieldSizeX][fieldSizeY];
         gameOver = false;
         initiolize = true;
         repaint();
@@ -122,32 +126,30 @@ public class Map extends JPanel {
 
     }
 
-    //трисовка графики
-   public void render (Graphics g){
-        if (!initiolize)return;
-        int panelWeigth = getWidth();
-        int panelHeigth = getHeight();
-        cellHeight = panelHeigth/fieldSizeY;
-        cellWight = panelWeigth/fieldSizeX;
+    //отрисовка графики
+   private void render (Graphics g){
+       if (!initiolize){drawStartImg(g,0,0);return;}
+       int panelWight = getWidth();
+       int panelHeight = getHeight();
+       cellHeight = panelHeight/fieldSizeY;
+       cellWight = panelWight/fieldSizeX;
 
-        int bottom = cellHeight /5;
-        g.setColor(Color.RED);
+       int bottom = cellHeight /5;
 
-        for (int i = 0; i <fieldSizeY; i++) {                      ////отрисовка поля
-            int y = i* cellHeight;
-            g.drawLine(0,y,panelWeigth,y);
-        }
+       fieldDraw(g, panelWight, panelHeight);
+       plTurnDraw(g, bottom);
+
+       if (gameOver) showGameOverMessage(g);
+   }
+
+    ///отрисовка ходов игрока или АИ
+    private void plTurnDraw(Graphics g, int bottom) {
         for (int i = 0; i <fieldSizeX; i++) {
-            int x = i* cellHeight;
-            g.drawLine(x,0,x,panelHeigth);
-        }
-
-        for (int i = 0; i <fieldSizeX; i++) {                        ///отрисовка ходов игрока или АИ
             for (int j = 0; j <fieldSizeY ; j++) {
             if (isEmptyCell(i,j)) continue;
                 if (field[i][j]== PLAYER1_DOT){
                     g.setColor(Color.RED);
-                    drowX(g, cellHeight, cellWight,i,j,bottom);
+                    drawX(g, cellHeight, cellWight,i,j,bottom);
 
                 }
                 else if (field[i][j]== PLAYER2_DOT){
@@ -162,15 +164,39 @@ public class Map extends JPanel {
                 else {
                     throw new RuntimeException("Unexpected value in cell X:"+i+"Y:"+j);
                 }
-
-
             }
         }
-        if (gameOver) showGameOverMessage(g);
+    }
 
-   }
+    //отрисовка поля
+    private void fieldDraw(Graphics g, int panelWight, int panelHeight) {
+        g.setColor(Color.RED);
+        for (int i = 0; i <fieldSizeY; i++) {
+            int y = i* cellHeight;
+            g.drawLine(0,y,panelWight,y);
+        }
+        for (int i = 0; i <fieldSizeX; i++) {
+            int x = i* cellHeight;
+            g.drawLine(x,0,x,panelHeight);
+        }
+    }
+    private void drawStartImg(Graphics g,int x,int y){
+        BufferedImage img;
+
+            try {
+                // чтение
+                img = ImageIO.read(new File("X-circle.png"));
+                g.drawImage(img, x, y, null);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+    }
+
     //нарисовать крестик
-   void drowX (Graphics g,int h, int w,int x,int y,int bottom){
+   private void drawX(Graphics g, int h, int w, int x, int y, int bottom){
        Graphics2D g2d = (Graphics2D) g;
        g2d.setStroke(new BasicStroke(h/5));
        g2d.drawLine(x*w+bottom,y*h+bottom,x*w+w-bottom,y*h+h-bottom);
@@ -178,7 +204,7 @@ public class Map extends JPanel {
 
    }
     //сообщение о конце игры
-   void showGameOverMessage(Graphics g){
+   private void showGameOverMessage(Graphics g){
         g.setColor(Color.DARK_GRAY);
         g.fillRect(0,130,getWidth(),120);
         g.setColor(Color.YELLOW);
@@ -186,16 +212,16 @@ public class Map extends JPanel {
 
         switch (gameEnd){
             case GameDraw:
-                drawMessege(gameEnd.getMesseg(),g);
+                drawMesseg(gameEnd.getMesseg(),g);
                 break;
             case Player1Win:
-                drawMessege(gameEnd.getMesseg(),g);
+                drawMesseg(gameEnd.getMesseg(),g);
                 break;
             case Player2Win:
-                drawMessege(gameEnd.getMesseg(),g);
+                drawMesseg(gameEnd.getMesseg(),g);
                 break;
             case AIWin:
-                drawMessege(gameEnd.getMesseg(),g);
+                drawMesseg(gameEnd.getMesseg(),g);
                 break;
 
             default:
@@ -204,7 +230,7 @@ public class Map extends JPanel {
 
    }
     //отрисовка сообщения
-   void drawMessege(String msg, Graphics g){
+   private void drawMesseg(String msg, Graphics g){
        FontMetrics fm = g.getFontMetrics(font);
        g.drawString(msg,(getWidth()-fm.stringWidth(msg))/2 ,
            (getHeight()-fm.getHeight())/2);}
