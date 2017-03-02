@@ -1,4 +1,4 @@
-package DZ.Lvl1.Lesson_7;
+package DZ.TicTacToe;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -8,9 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Created by DENIS on 16.02.2017.
+ * Created by DENIS on 16.02.2017. Окно выбора режима игры
  */
-public class StartNewGameWindow extends JFrame{
+ class StartNewGameWindow extends JFrame{
 
     private final int WINDOW_WIGHT = 266;
     private final int WINDOW_HEIGHT = 366;
@@ -30,18 +30,20 @@ public class StartNewGameWindow extends JFrame{
     private GameWindow gameWindow ;
 
 
+
+
     StartNewGameWindow(GameWindow gameWindow){
         this.gameWindow = gameWindow;
         setTitle("Game settings");
         setSize(WINDOW_WIGHT, WINDOW_HEIGHT);
         setResizable(false);
-        Rectangle rectangle  = gameWindow.getBounds();
+        Rectangle rectangle = gameWindow.getBounds();
         int pos_X = (int)rectangle.getCenterX() - WINDOW_WIGHT /2;
-        int pos_Y = (int)rectangle.getCenterY() -  WINDOW_HEIGHT /2;
+        int pos_Y = (int)rectangle.getCenterY() - WINDOW_HEIGHT /2;
         setLocation(pos_X,pos_Y);
         setLayout(new GridLayout(10,2));
         gameModeControl();
-        gameControlFildAndWinLength();
+        gameControlFieldAndWinLength();
 
         bStartGame = new JButton("Start Game!");
         bStartGame.addActionListener(new ActionListener() {
@@ -51,11 +53,10 @@ public class StartNewGameWindow extends JFrame{
             }
         });
         add(bStartGame);
+
     }
-
-
-
-    void gameModeControl (){
+    //кнопки выбора режима игры
+    private void gameModeControl (){
 
         add(new JLabel("Choose gaming mod"));
         rbtn_HUM_vs_AI = new JRadioButton("Human vs AI",true);
@@ -66,7 +67,8 @@ public class StartNewGameWindow extends JFrame{
         add(rbtn_HUM_vs_AI);
         add(rbtn_HUM_vs_HUM);
     }
-    void gameControlFildAndWinLength(){
+    //слайдеры выбора размеров поля и выигрышной комбинации
+    private void gameControlFieldAndWinLength(){
         JLabel lblWinLen = new JLabel(STR_WIN_LEN + MIN_FIELD_SIZE);
         add(lblWinLen);
         slWinLen = new JSlider(MIN_WIN_LENGTH,MIN_FIELD_SIZE,MIN_WIN_LENGTH);
@@ -91,7 +93,8 @@ public class StartNewGameWindow extends JFrame{
         add(slFieldSize);
 
     }
-    void btnStartGame_onClick(){
+    //кнопка начала игры
+    private void btnStartGame_onClick(){
         GameMod gameMod;
         if (rbtn_HUM_vs_AI.isSelected())gameMod = GameMod.Human_vs_AI;
         else if (rbtn_HUM_vs_HUM.isSelected())gameMod = GameMod.Human_vs_Human;

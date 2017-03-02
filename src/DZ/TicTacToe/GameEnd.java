@@ -1,9 +1,9 @@
-package DZ.Lvl1.Lesson_7;
+package DZ.TicTacToe;
 
 /**
  * перечисление типов конца игры
  */
-public enum GameEnd {
+ enum GameEnd {
     GameDraw("ничья"),Player1Win("победил игрок1"),Player2Win("победил игрок2"),AIWin("Победил компьютер");
     String msg;
 

@@ -1,4 +1,4 @@
-package DZ.Lvl1.Lesson_7;
+package DZ.TicTacToe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,22 +6,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Created by Денис on 15.02.2017.
+ * Created by Денис on 15.02.2017. Стартовое окно
  */
-public class GameWindow extends JFrame{
-    private final int WINDOW_HIGHT = 500;
+class GameWindow extends JFrame{
+    private final int WINDOW_HEIGHT = 500;
     private final int WINDOW_WIGHT = 451;
     private final int WINDOW_POS_X = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-WINDOW_WIGHT;
-
-    private final int WINDOW_POS_Y = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2-WINDOW_HIGHT/2;
+    private final int WINDOW_POS_Y = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2- WINDOW_HEIGHT /2;
     private StartNewGameWindow startNewGameWindow;
     private Map map;
 
-
     GameWindow(){
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Denis can!");
-        setSize(WINDOW_WIGHT,WINDOW_HIGHT);
+        setTitle("TicTacToe");
+        setSize(WINDOW_WIGHT, WINDOW_HEIGHT);
         setResizable(false);
 
         setLocation(WINDOW_POS_X,WINDOW_POS_Y);
@@ -30,7 +28,7 @@ public class GameWindow extends JFrame{
         btnNewGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                StartNewGW();
+                startSNGWindow();
                 startNewGameWindow.setVisible(true);
             }
         });
@@ -55,12 +53,14 @@ public class GameWindow extends JFrame{
         setVisible(true);
     }
 
-    // вызывает окно в момент нажатия кнопки
-    private void StartNewGW(){
+    //запускает окно настроек новой игры
+    private void startSNGWindow(){
         startNewGameWindow = new StartNewGameWindow(this);
     }
 
-    void startNewGame (GameMod gameMode,int fildSizeX,int fildSizeY,int winLenth){
-        map.startNewGame(gameMode,fildSizeX,fildSizeY,winLenth);
+    //метод передает параметры игры полю отрисовки
+    void startNewGame (GameMod gameMode,int fieldSizeX,int fieldSizeY,int winLength){
+        map.startNewGame(gameMode,fieldSizeX,fieldSizeY,winLength);
+
     }
 }

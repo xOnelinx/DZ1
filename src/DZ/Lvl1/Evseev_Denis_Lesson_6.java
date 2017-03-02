@@ -33,7 +33,7 @@ public class Evseev_Denis_Lesson_6 {
         fout.flush();
         fout.close();
     }
-    private static StringBuilder reader (String s)throws IOException{
+    public static StringBuilder reader (String s)throws IOException{
 
         FileInputStream fin = new FileInputStream(s);
 
