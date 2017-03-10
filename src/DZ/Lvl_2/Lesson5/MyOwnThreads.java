@@ -25,7 +25,7 @@ public class MyOwnThreads {
         System.arraycopy(arr,0,a1,0,h);
         System.arraycopy(arr,h,a2,0,h);
         long time1 = System.currentTimeMillis();
-        new Thread(new Runnable() {
+        Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < h; i++) {
@@ -33,9 +33,9 @@ public class MyOwnThreads {
                             Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
                 }
             }
-        }).start();
-        long calcTime1 = System.currentTimeMillis();
-         new Thread(new Runnable() {
+        });
+
+        Thread t2 = new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < h; i++) {
@@ -43,15 +43,25 @@ public class MyOwnThreads {
                             Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
                 }
             }
-        }).start();
+        });
+
+        t1.start();
+        t2.start();
+
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         long calcTime2 = System.currentTimeMillis();
         System.arraycopy(a1,0,arr,0,h);
         System.arraycopy(a2,0,arr,h,h);
         long a1_a2 = System.currentTimeMillis();
         System.out.println("2 потока");
         System.out.print(" разбивка - "+(time1-startTime)+
-                "\n 1 рассчет "+(calcTime1-time1)
-                +"\n 2 рассчет "+(calcTime2-calcTime1)+
+                "\n  рассчет "+(calcTime2-time1)+
                 "\n склейка "+(a1_a2-calcTime2)+
                 "\n вобщем "+(a1_a2-startTime));
     }
