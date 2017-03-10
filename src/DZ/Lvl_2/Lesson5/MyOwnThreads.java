@@ -40,7 +40,7 @@ public class MyOwnThreads {
             public void run() {
                 for (int i = 0; i < h; i++) {
                     a2[i] = (float)(a2[i] * Math.sin(0.2f + i / 5) *
-                            Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+                            Math.cos(0.2f + (i+h) / 5) * Math.cos(0.4f + (i+h) / 2));
                 }
             }
         });
